@@ -4,7 +4,7 @@ import {
 	typeSafeObjectEntries,
 	typeSafeObjectFromEntries
 } from "@nesvet/n";
-import type { InSiteCollections } from "insite-db";
+import type { Collections } from "insite-db";
 import { updatedAtKey, updatedAtSymbol } from "./symbols";
 import type {
 	Config,
@@ -28,7 +28,7 @@ export class UnknownConfigItemError extends Error {
 
 let initedConfig: Config<Schema>;
 
-export async function init<S extends Schema>(collections: InSiteCollections, schema: S) {
+export async function init<S extends Schema>(collections: Collections, schema: S) {
 	
 	if (!initedConfig) {
 		type ID = ConfigItemID<S>;
