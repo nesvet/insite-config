@@ -1,7 +1,10 @@
+import type { CollectionOptions as CommonCollectionOptions } from "insite-db";
 import { updatedAtKey, updatedAtSymbol } from "./symbols";
 
 
 export type Schema = Record<string, Record<string, boolean | number | string | null>>;
+
+export type CollectionOptions = Omit<CommonCollectionOptions, "fullDocument" | "watch">;
 
 export type ConfigItemID<S extends Schema> = NonNullable<Exclude<Extract<keyof S, string>, "addListener" | "off" | "on" | "removeListener" | "update">>;
 

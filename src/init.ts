@@ -7,6 +7,7 @@ import {
 import type { Collections } from "insite-db";
 import { updatedAtKey, updatedAtSymbol } from "./symbols";
 import type {
+	CollectionOptions,
 	Config,
 	ConfigItemID,
 	Listener,
@@ -28,7 +29,7 @@ export class UnknownConfigItemError extends Error {
 
 let initedConfig: Config<Schema>;
 
-export async function init<S extends Schema>(collections: Collections, schema: S) {
+export async function init<S extends Schema>(collections: Collections, schema: S, collectionOptions?: CollectionOptions) {
 	
 	if (!initedConfig) {
 		type ID = ConfigItemID<S>;
@@ -37,7 +38,7 @@ export async function init<S extends Schema>(collections: Collections, schema: S
 		const updateListeners = new Map<CI, Set<Listener<CI>>>();
 		
 		type CIDoc = CI & { _id: ID };
-		const collection = await collections.ensure<CIDoc>("config");
+		const collection = await collections.ensure<CIDoc>("config", collectionOptions);
 		
 		const config: Config<S> = {
 			
@@ -135,7 +136,7 @@ export async function init<S extends Schema>(collections: Collections, schema: S
 			...[ ...collectionMap.keys() ].filter(_id => !schema[_id]).map(_id => ({ deleteOne: { filter: { _id } } }))
 		]);
 		
-		collection.changeListeners.add(next => {
+		collection.onChange(next => {
 			switch (next.operationType) {
 				case "update":
 				case "replace": {
