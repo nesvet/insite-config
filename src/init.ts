@@ -36,7 +36,7 @@ export async function init<S extends Schema>(collections: Collections, schema: S
 		
 		const updateListeners = new Map<CI, Set<Listener<CI>>>();
 		
-		type CIDoc = { _id: ID } & CI;
+		type CIDoc = CI & { _id: ID };
 		const collection = await collections.ensure<CIDoc>("config");
 		
 		const config: Config<S> = {
