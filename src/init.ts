@@ -47,7 +47,7 @@ export async function init<S extends Schema>(collections: Collections, schema: S
 				
 				if (item) {
 					if (immediately)
-						listener.call(item, item, { ...item });
+						void listener.call(item, item, { ...item });
 					
 					updateListeners.get(item)?.add(listener) ??
 					updateListeners.set(item, new Set([ listener ]));
@@ -81,7 +81,7 @@ export async function init<S extends Schema>(collections: Collections, schema: S
 						if (!isEmpty(updatedFields)) {
 							if (!updatedAt) {
 								Object.assign(updatedFields, { [updatedAtKey]: Date.now() });
-								collection.updateOne({ _id }, { $set: updatedFields as Partial<CIDoc> });
+								void collection.updateOne({ _id }, { $set: updatedFields as Partial<CIDoc> });
 							}
 							
 							const prevFields = pick(item, Object.keys(updatedFields)) as Partial<CI>;
@@ -146,7 +146,7 @@ export async function init<S extends Schema>(collections: Collections, schema: S
 						...restProps
 					} = next.operationType === "replace" ? next.fullDocument : next.updateDescription.updatedFields!;
 					
-					config.update(next.documentKey._id as unknown as ID, {
+					void config.update(next.documentKey._id as unknown as ID, {
 						...restProps,
 						[updatedAtSymbol]: updatedAt
 					} as Updates<CI>);
